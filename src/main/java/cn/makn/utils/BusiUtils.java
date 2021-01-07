@@ -1,7 +1,5 @@
 package cn.makn.utils;
 
-import org.springframework.util.StringUtils;
-
 import java.util.Collection;
 import java.util.Map;
 
@@ -9,7 +7,7 @@ import java.util.Map;
  * @Description: 公共处理工具类
  * @author makn
  * @date 2021/1/7 11:01
- * @param null
+ * @param
  * @return
  */
 public class BusiUtils {
@@ -42,7 +40,7 @@ public class BusiUtils {
             return true;
         }
         if(String.class.isInstance(obj)){
-            return StringUtils.isEmpty(obj);
+            return obj == null || ((String) obj).length() == 0;
         } else if (Collection.class.isInstance(obj)) {
             return ((Collection<?>)obj).size() == 0;
         } else if (Map.class.isInstance(obj)) {
