@@ -1,5 +1,11 @@
 package cn.makn.utils;
 
+import javax.print.DocFlavor;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @Description: IP工具类
  * @author: makn
@@ -7,6 +13,32 @@ package cn.makn.utils;
  * @date: 2020/12/29 9:34
  */
 public class IPUtils {
+
+    private static ReentrantLock lock = new ReentrantLock();
+    private static String lockIP = null;
+
+    /**
+     * @param
+     * @return
+     * @Description: 获取本地IP
+     * @author makn
+     * @date 2021/1/7 14:48
+     */
+    public static String getLocalHostIP() {
+        try {
+            lock.lock();
+            if (BusiUtils.isNull(lockIP)) {
+                try {
+                    lockIP = InetAddress.getLocalHost().getHostAddress();
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException("An exception occurred in obtaining the local IP address");
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return lockIP;
+    }
 
     /**
      * ip地址转成long型数字
@@ -21,7 +53,7 @@ public class IPUtils {
         String[] ips = strIp.split("\\.");
         int ipFour = 0;
         //因为每个位置最大255，刚好在2进制里表示8位
-        for(String ip4: ips){
+        for (String ip4 : ips) {
             Integer ip4a = Integer.parseInt(ip4);
             //这里应该用+也可以,但是位运算更快
             ipFour = (ipFour << 8) | ip4a;
@@ -60,5 +92,6 @@ public class IPUtils {
     public static void main(String[] args) {
         System.out.println(ipToLong("127.0.0.1"));
         System.out.println(longToIP(2130706433));
+        System.out.println("获取本地IP：" + getLocalHostIP());
     }
 }
